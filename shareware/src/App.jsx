@@ -25,7 +25,7 @@ function App() {
       },
     ];
   });
-  const [bgColor, setBgColor] = useState('#00007f');
+  const [background, setBackground] = useState('#00007f');
 
   function openWindow(id, title, options = {}) {
     setOpenWindows((prev) => {
@@ -33,9 +33,9 @@ function App() {
   
       const width = options.width ?? 300;
       const height = options.height ?? 200;
-  
-      const x = options.x ?? (window.innerWidth - width) / 2;
-      const y = options.y ?? (window.innerHeight - height) / 2;
+
+      const x = options.x ?? (typeof width === 'number' ? (window.innerWidth - width) / 2 : 100);
+      const y = options.y ?? (typeof height === 'number' ? (window.innerHeight - height) / 2 : 100);
   
       return [
         ...prev,
@@ -62,7 +62,11 @@ function App() {
 
   return (
     <>
-      <div className='w-screen h-screen' style={{ backgroundColor: bgColor }}>
+      <div className='w-screen h-screen'   style={{
+        background: background,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}>
 
         {openWindows.map((win) => {
           const AppComponent = appRegistry[win.id].component;
@@ -81,14 +85,14 @@ function App() {
                 onMaximize={() => toggleMaximize(win.id)}
                 onRestore={() => toggleMaximize(win.id)}
               >
-              <AppComponent setBgColor={setBgColor} />
+              <AppComponent setBackground={setBackground} />
             </Window>
           );
         })}
  
         <div className='flex flex-col flex-wrap w-fit p-8 gap-4'>
           <DesktopIcon label="Readme" icon="/icons/home.png" onOpen={() => openWindow('home', 'Welcome to Shareware', {width: 300, height: 400})}  />
-          <DesktopIcon label="Background Changer" icon="/icons/bgchanger.png" onOpen={() => openWindow('bgchanger', 'Background Changer')} />
+          <DesktopIcon label="Background Changer" icon="/icons/bgchanger.png" onOpen={() => openWindow('bgchanger', 'Background Changer', {width: 'fit-content', height: 400})} />
         </div>
 
         <Taskbar
